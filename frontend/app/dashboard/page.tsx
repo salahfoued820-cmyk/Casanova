@@ -9,7 +9,7 @@ import { Transaction } from '@/types';
 
 export default function DashboardPage() {
   const router = useRouter();
-  const { user, token, isAuthenticated, logout } = useAuth();
+  const { user, token, isAuthenticated, logout, loading: authLoading } = useAuth();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filterType, setFilterType] = useState<string>('all');
@@ -19,10 +19,10 @@ export default function DashboardPage() {
   const itemsPerPage = 10;
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/login');
-      return;
-    }
+  if (!authLoading && !isAuthenticated) {
+    router.push('/login');
+    return;
+  }
 
     const fetchTransactions = async () => {
       if (token) {
