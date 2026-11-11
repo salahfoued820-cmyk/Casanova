@@ -26,7 +26,7 @@ export default function AdminDashboard() {
     lastName: ''
   });
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://onrender.com';
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://casanova-af97.onrender.com';
 
   const fetchUsers = async (adminPin: string) => {
     setLoading(true);
