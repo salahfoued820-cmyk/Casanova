@@ -38,7 +38,7 @@ export default function DashboardPage() {
     };
 
     fetchTransactions();
-  }, [isAuthenticated, token, router]);
+  }, [authLoading,isAuthenticated, token, router]);
 
   if (!user || isLoading) {
     return (
@@ -103,7 +103,7 @@ export default function DashboardPage() {
               <span className="text-green-100">Balance</span>
               <span className="text-2xl">💰</span>
             </div>
-            <div className="text-3xl font-bold">{user.balance.toFixed(2)}</div>
+            <div className="text-3xl font-bold">TND{user.balance.toFixed(2)}</div>
           </div>
 
           {/* Bonus Balance Card */}
@@ -116,7 +116,7 @@ export default function DashboardPage() {
           </div>
 
           {/* VIP Level Card */}
-          <div className={`bg-gradient-to-br TND{vipLevelColors[user.vipLevel]} rounded-xl p-6 text-white`}>
+          <div className={`bg-gradient-to-br ${vipLevelColors[user.vipLevel]} rounded-xl p-6 text-white`}>
             <div className="flex items-center justify-between mb-2">
               <span className="opacity-90">VIP Level</span>
               <span className="text-2xl">👑</span>
@@ -125,7 +125,7 @@ export default function DashboardPage() {
           </div>
 
           {/* KYC Status Card */}
-          <div className={`bg-gradient-to-br TND{user.kycStatus === 'verified' ? 'from-blue-500 to-blue-700' : 'from-gray-500 to-gray-700'} rounded-xl p-6 text-white`}>
+          <div className={`bg-gradient-to-br ${user.kycStatus === 'verified' ? 'from-blue-500 to-blue-700' : 'from-gray-500 to-gray-700'} rounded-xl p-6 text-white`}>
             <div className="flex items-center justify-between mb-2">
               <span className="opacity-90">KYC Status</span>
               <span className="text-2xl">
@@ -334,7 +334,7 @@ export default function DashboardPage() {
                     {paginatedTransactions.map((transaction) => (
                     <tr key={transaction._id} className="border-b border-gray-700/50 hover:bg-gray-700/30">
                       <td className="py-3 px-4">
-                        <span className={`capitalize font-medium TND{
+                        <span className={`capitalize font-medium ${
                           transaction.type === 'deposit' ? 'text-green-400' :
                           transaction.type === 'withdrawal' ? 'text-blue-400' :
                           transaction.type === 'win' ? 'text-yellow-400' :
