@@ -1,15 +1,23 @@
 'use client';
 import React, { useState } from 'react';
 
+interface Player {
+  _id: string;
+  username: string;
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  balance?: number;
+}
+
 export default function AdminDashboard() {
   const [pin, setPin] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [users, setUsers] = useState<any[]>([]);
+  const [users, setUsers] = useState<Player[]>([]);
   const [amounts, setAmounts] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
 
-  // إنشاء لاعب جديد
   const [newPlayer, setNewPlayer] = useState({
     username: '',
     email: '',
@@ -34,7 +42,7 @@ export default function AdminDashboard() {
       } else {
         setMessage('كلمة السر غير صحيحة!');
       }
-    } catch (err) {
+    } catch {
       setMessage('خطأ في الاتصال بالخادم');
     }
     setLoading(false);
@@ -64,7 +72,7 @@ export default function AdminDashboard() {
         setAmounts({ ...amounts, [userId]: '' });
         fetchUsers(pin);
       }
-    } catch (err) {
+    } catch {
       setMessage('حدث خطأ أثناء الشحن');
     }
   };
@@ -95,7 +103,7 @@ export default function AdminDashboard() {
       } else {
         setMessage(data.message || 'تأكد من عدم تكرار اسم المستخدم أو البريد');
       }
-    } catch (err) {
+    } catch {
       setMessage('فشل إنشاء الحساب');
     }
   };
@@ -145,7 +153,6 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* قسم إضافة لاعب جديد */}
         <div className="bg-gray-900 p-6 rounded-2xl border border-gray-800 mb-8">
           <h2 className="text-xl font-bold text-white mb-4">➕ إضافة صديق (لاعب جديد)</h2>
           <form onSubmit={handleCreatePlayer} className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -193,7 +200,6 @@ export default function AdminDashboard() {
           </form>
         </div>
 
-        {/* قائمة اللاعبين وشحن الرصيد */}
         <div className="bg-gray-900 p-6 rounded-2xl border border-gray-800">
           <h2 className="text-xl font-bold text-white mb-4">👥 قائمة اللاعبين ({users.length})</h2>
           <div className="space-y-4">
