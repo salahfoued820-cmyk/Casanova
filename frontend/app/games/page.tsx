@@ -1,33 +1,33 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 const P_BASE = ['https:/', '/demogamesfree.pragmaticplay.net', '/gs2c/openGame.do?gameSymbol='].join('');
 const P_END = ['&websiteUrl=https%3A%2F%2Fdemogamesfree.pragmaticplay.net', '&jurisdiction=99&lang=FR&cur=TND'].join('');
-const P_IMG = ['https:/', '/demogamesfree.pragmaticplay.net', '/game_pic/rec/325/'].join('');
 const A_BASE = ['https:/', '/://amatic.com', '/games/'].join('');
+const ESPN_API = ['https:/', '/://espn.com'].join('');
 
 const PRAG_60 = [
-  ['vs20olympgate', 'Gates of Olympus'], ['vs20fruitsw', 'Sweet Bonanza'], ['vs10bbbonanza', 'Big Bass Bonanza'],
-  ['vswayslions', '5 Lions Megaways'], ['vs20doghouse', 'The Dog House'], ['vs25wolfgold', 'Wolf Gold'],
-  ['vs20sugarrush', 'Sugar Rush'], ['vs20starlight', 'Starlight Princess'], ['vs20fruitparty', 'Fruit Party'],
-  ['vswaysdogs', 'Dog House Megaways'], ['vs20olympx', 'Gates of Olympus 1000'], ['vs20sugarrushx', 'Sugar Rush 1000'],
-  ['vs20starlightx', 'Starlight Princess 1000'], ['vs10bbsplash', 'Big Bass Splash'], ['vs10txchunk', 'Big Bass Amazon Xtreme'],
-  ['vs20procount', 'Wisdom of Athena'], ['vs20zeusvs', 'Zeus vs Hades'], ['vs20midas', 'The Hand of Midas'],
-  ['vs20rhino', 'Great Rhino Megaways'], ['vswaysmadame', 'Madame Destiny Megaways'], ['vs20wildwest', 'Wild West Gold'],
-  ['vs25mustang', 'Mustang Gold'], ['vs40pirate', 'Pirate Gold'], ['vs25chilli', 'Chilli Heat'],
-  ['vs20gemsbonanza', 'Gems Bonanza'], ['vs20juicyfr', 'Juicy Fruits'], ['vs20bonanzagold', 'Sweet Bonanza Xmas'],
-  ['vs20fparty2', 'Fruit Party 2'], ['vswaysbufking', 'Buffalo King Megaways'], ['vs40wildwest', 'Wild West Megaways'],
-  ['vs20cleocatra', 'Cleocatra'], ['vs20gatotgates', 'Gates of Gatot Kaca'], ['vs10bookoftut', 'John Hunter Book of Tut'],
-  ['vs25scarab', 'Tomb of Scarab Queen'], ['vs20pbonanza', 'Pyramid Bonanza'], ['vs20muertos', 'Muertos Multiplier'],
-  ['vs10bhall', 'Big Bass Halloween'], ['vs10bbfloats', 'Big Bass Keeping Reel'], ['vs20forge', 'Forge of Olympus'],
-  ['vs20candyblitz', 'Candy Blitz'], ['vs20tweethouse', 'The Tweety House'], ['vs25peking', 'Peking Luck'],
-  ['vs20kraken', 'Release the Kraken'], ['vs20kraken2', 'Release the Kraken 2'], ['vs20chickdrop', 'Chicken Drop'],
-  ['vs20bchouse', 'Barn Festival'], ['vs20drgbless', 'Dragon Hero'], ['vs20magicpot', 'Magic Money Maze'],
-  ['vs20swordofares', 'Sword of Ares'], ['vs20spinscore', 'Spin & Score Megaways'], ['vs20pizzapizza', 'Pizza! Pizza? Pizza!'],
-  ['vs20mochimon', 'Mochimon'], ['vs20rabbitgarden', 'Rabbit Garden'], ['vs20wildhop', 'Wild Hop & Drop'],
-  ['vs20stickybees', 'Sticky Bees'], ['vs20excalibur', 'Excalibur Unleashed'], ['vs20lampinf', 'Lamp of Infinity'],
-  ['vs20heist', 'Heist for Golden Nuggets'], ['vs20fatpanda', 'Fat Panda'], ['vs20spellmaster', 'Spellbinding Mystery']
+  ['vs20olympgate', 'Gates of Olympus', '⚡👑'], ['vs20fruitsw', 'Sweet Bonanza', '🍭🍬'], ['vs10bbbonanza', 'Big Bass Bonanza', '🎣🐟'],
+  ['vswayslions', '5 Lions Megaways', '🦁🐉'], ['vs20doghouse', 'The Dog House', '🐶🏠'], ['vs25wolfgold', 'Wolf Gold', '🐺🌕'],
+  ['vs20sugarrush', 'Sugar Rush', '🧸🍩'], ['vs20starlight', 'Starlight Princess', '👸✨'], ['vs20fruitparty', 'Fruit Party', '🍓🍇'],
+  ['vswaysdogs', 'Dog House Megaways', '🐕🦴'], ['vs20olympx', 'Gates of Olympus 1000', '⚡🔥'], ['vs20sugarrushx', 'Sugar Rush 1000', '🍬💥'],
+  ['vs20starlightx', 'Starlight 1000', '👸💫'], ['vs10bbsplash', 'Big Bass Splash', '🚤🎣'], ['vs10txchunk', 'Big Bass Amazon', '🌴🐟'],
+  ['vs20procount', 'Wisdom of Athena', '🦉🏛️'], ['vs20zeusvs', 'Zeus vs Hades', '⚡🔥'], ['vs20midas', 'Hand of Midas', '🖐️💰'],
+  ['vs20rhino', 'Great Rhino', '🦏🌅'], ['vswaysmadame', 'Madame Destiny', '🔮🦉'], ['vs20wildwest', 'Wild West Gold', '🤠💰'],
+  ['vs25mustang', 'Mustang Gold', '🐎🔥'], ['vs40pirate', 'Pirate Gold', '🏴‍☠️💎'], ['vs25chilli', 'Chilli Heat', '🌶️🎺'],
+  ['vs20gemsbonanza', 'Gems Bonanza', '💎👑'], ['vs20juicyfr', 'Juicy Fruits', '🍉👑'], ['vs20bonanzagold', 'Bonanza Xmas', '🎄🍭'],
+  ['vs20fparty2', 'Fruit Party 2', '🍍🍓'], ['vswaysbufking', 'Buffalo King', '🦬🏔️'], ['vs40wildwest', 'Wild West Megaways', '🔫💰'],
+  ['vs20cleocatra', 'Cleocatra', '🐱🏺'], ['vs20gatotgates', 'Gatot Kaca', '🛡️⚡'], ['vs10bookoftut', 'Book of Tut', '📖🏺'],
+  ['vs25scarab', 'Scarab Queen', '🪲👑'], ['vs20pbonanza', 'Pyramid Bonanza', '🔺💎'], ['vs20muertos', 'Muertos Multiplier', '💀🎸'],
+  ['vs10bhall', 'Big Bass Halloween', '🎃🎣'], ['vs10bbfloats', 'Keeping the Reel', '🎣💰'], ['vs20forge', 'Forge of Olympus', '🔨🔥'],
+  ['vs20candyblitz', 'Candy Blitz', '🍫⚡'], ['vs20tweethouse', 'Tweety House', '🐤🏡'], ['vs25peking', 'Peking Luck', '🎭🏮'],
+  ['vs20kraken', 'Release the Kraken', '🐙🌊'], ['vs20kraken2', 'Kraken 2', '🦑💎'], ['vs20chickdrop', 'Chicken Drop', '🐔🥚'],
+  ['vs20bchouse', 'Barn Festival', '🚜🌽'], ['vs20drgbless', 'Dragon Hero', '🐉⚔️'], ['vs20magicpot', 'Magic Money Maze', '🎩💵'],
+  ['vs20swordofares', 'Sword of Ares', '⚔️🛡️'], ['vs20spinscore', 'Spin & Score', '⚽🏆'], ['vs20pizzapizza', 'Pizza! Pizza?', '🍕🔥'],
+  ['vs20mochimon', 'Mochimon', '👾🍡'], ['vs20rabbitgarden', 'Rabbit Garden', '🐰🥕'], ['vs20wildhop', 'Wild Hop & Drop', '🐸💎'],
+  ['vs20stickybees', 'Sticky Bees', '🐝🍯'], ['vs20excalibur', 'Excalibur', '🗡️👑'], ['vs20lampinf', 'Lamp of Infinity', '🧞‍♂️✨'],
+  ['vs20heist', 'Golden Nuggets', '⛏️💰'], ['vs20fatpanda', 'Fat Panda', '🐼🏮'], ['vs20spellmaster', 'Spellbinding', '🧙‍♂️🔮']
 ];
 
 const AMAT_30 = [
@@ -51,40 +51,94 @@ const AMAT_30 = [
 const LIVE_GAMES = [
   ['101', 'Roulette Live', '🎡🔴⚫'], ['103', 'Blackjack Live', '🃏♠️♥️'],
   ['104', 'Baccarat Live', '🎴💎👑'], ['801', 'Mega Wheel Live', '🎡🌈💰'],
-  ['1101', 'Sweet Bonanza CandyLand', '🍭🎡🎪'], ['1301', 'Mega Roulette', '⚡🎡🔥']
+  ['1101', 'Sweet CandyLand', '🍭🎡🎪'], ['1301', 'Mega Roulette', '⚡🎡🔥']
+];
+
+const BGS = [
+  'from-purple-700 via-indigo-800 to-amber-600',
+  'from-pink-600 via-rose-600 to-sky-500',
+  'from-cyan-600 via-blue-700 to-emerald-600',
+  'from-amber-600 via-orange-700 to-red-800',
+  'from-emerald-600 via-teal-800 to-slate-900',
+  'from-fuchsia-700 via-purple-800 to-indigo-900'
 ];
 
 const ALL_GAMES = [
-  ...PRAG_60.map(([code, name], i) => ({
-    id: `p-${i}`, name, provider: 'PRAGMATIC' as const, drops: true, bg: 'from-purple-900 to-amber-700', icon: '⚡', code
+  ...PRAG_60.map(([code, name, icon], i) => ({
+    id: `p-${i}`, name, provider: 'PRAGMATIC' as const, drops: true, bg: BGS[i % BGS.length], icon, code
   })),
   ...AMAT_30.map(([code, name, icon], i) => ({
-    id: `a-${i}`, name, provider: 'AMATIC' as const, drops: false, bg: 'from-red-800 to-amber-600', icon, code
+    id: `a-${i}`, name, provider: 'AMATIC' as const, drops: false, bg: 'from-red-700 via-orange-600 to-amber-500', icon, code
   })),
   ...LIVE_GAMES.map(([code, name, icon], i) => ({
-    id: `l-${i}`, name, provider: 'LIVE' as const, drops: false, bg: 'from-emerald-800 to-teal-950', icon, code
+    id: `l-${i}`, name, provider: 'LIVE' as const, drops: false, bg: 'from-emerald-700 via-teal-800 to-gray-900', icon, code
   }))
 ];
 
-const MATCHES = [
-  { id: 'm1', league: '🇹🇳 Ligue 1 Tunisie', status: 'LIVE', time: "64'", home: 'Espérance ST', away: 'Club Africain', odds: [2.10, 3.10, 3.40] },
-  { id: 'm2', league: '🇹🇳 Ligue 1 Tunisie', status: 'LIVE', time: "38'", home: 'Étoile du Sahel', away: 'CS Sfaxien', odds: [2.35, 2.95, 3.15] },
-  { id: 'm3', league: '🇪🇸 La Liga', status: 'LIVE', time: "72'", home: 'Real Madrid', away: 'FC Barcelona', odds: [1.95, 3.60, 3.50] },
-  { id: 'm4', league: '🇬🇧 Premier League', status: 'À VENIR', time: '20:45', home: 'Manchester City', away: 'Liverpool', odds: [2.05, 3.50, 3.30] },
-  { id: 'm5', league: '🇮🇹 Serie A', status: 'À VENIR', time: '21:00', home: 'Inter Milan', away: 'AC Milan', odds: [1.85, 3.45, 4.10] },
-  { id: 'm6', league: '🇫🇷 Ligue 1', status: 'À VENIR', time: '21:00', home: 'Paris SG', away: 'Olympique Marseille', odds: [1.55, 4.20, 5.50] }
-];
+interface MatchItem {
+  id: string;
+  league: string;
+  status: string;
+  isLive: boolean;
+  time: string;
+  home: string;
+  away: string;
+  score: string;
+  odds: [number, number, number];
+}
 
-export default function FullCasinoAndSport() {
+export default function HomeCasinoAndLiveSport() {
   const [section, setSection] = useState<'CASINO' | 'LIVE_CASINO' | 'SPORT' | 'LIVE_SPORT'>('CASINO');
   const [subTab, setSubTab] = useState<'TOUS' | 'FAVORIS' | 'DROPS'>('TOUS');
   const [provider, setProvider] = useState<'TOUS' | 'PRAGMATIC' | 'AMATIC'>('TOUS');
   const [search, setSearch] = useState('');
-  const [favorites, setFavorites] = useState<string[]>(['p-0', 'p-1', 'a-0', 'l-0']);
+  const [favorites, setFavorites] = useState<string[]>(['p-0', 'p-1', 'p-2', 'a-0', 'l-0']);
   const [active, setActive] = useState<typeof ALL_GAMES[number] | null>(null);
+
+  const [matches, setMatches] = useState<MatchItem[]>([]);
+  const [loadingSport, setLoadingSport] = useState(false);
   const [ticket, setTicket] = useState<{ match: string; pick: string; odd: number }[]>([]);
   const [stake, setStake] = useState(10);
   const [betPlaced, setBetPlaced] = useState(false);
+
+  useEffect(() => {
+    const loadRealMatches = async () => {
+      setLoadingSport(true);
+      try {
+        const res = await fetch(ESPN_API);
+        const data = await res.json();
+        const events = data.events || [];
+        const parsed: MatchItem[] = events.slice(0, 25).map((ev: any, idx: number) => {
+          const comp = ev.competitions?.[0];
+          const homeTeam = comp?.competitors?.find((c: any) => c.homeAway === 'home');
+          const awayTeam = comp?.competitors?.find((c: any) => c.homeAway === 'away');
+          const state = ev.status?.type?.state; // 'in' = live, 'pre' = upcoming, 'post' = finished
+          const isLive = state === 'in';
+          const dateObj = new Date(ev.date);
+          const tunisTime = dateObj.toLocaleTimeString('fr-TN', { hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Tunis' });
+
+          return {
+            id: ev.id || String(idx),
+            league: ev.season?.slug?.toUpperCase() || 'FOOTBALL',
+            status: ev.status?.type?.shortDetail || tunisTime,
+            isLive,
+            time: tunisTime,
+            home: homeTeam?.team?.shortDisplayName || 'Équipe 1',
+            away: awayTeam?.team?.shortDisplayName || 'Équipe 2',
+            score: isLive || state === 'post' ? `${homeTeam?.score || 0} - ${awayTeam?.score || 0}` : 'VS',
+            odds: [
+              Number((1.65 + (idx % 5) * 0.25).toFixed(2)),
+              Number((3.10 + (idx % 4) * 0.15).toFixed(2)),
+              Number((2.20 + ((idx + 2) % 5) * 0.35).toFixed(2))
+            ]
+          };
+        });
+        setMatches(parsed);
+      } catch {}
+      setLoadingSport(false);
+    };
+    loadRealMatches();
+  }, []);
 
   const getUrl = (g: typeof ALL_GAMES[number]) =>
     g.provider === 'AMATIC'
@@ -124,7 +178,7 @@ export default function FullCasinoAndSport() {
     return true;
   });
 
-  const filteredMatches = MATCHES.filter(m => section === 'LIVE_SPORT' ? m.status === 'LIVE' : true);
+  const shownMatches = matches.filter(m => section === 'LIVE_SPORT' ? m.isLive : true);
   const totalOdd = ticket.reduce((acc, item) => acc * item.odd, 1);
 
   return (
@@ -138,35 +192,51 @@ export default function FullCasinoAndSport() {
       <div className="max-w-4xl mx-auto p-3">
         {(section === 'SPORT' || section === 'LIVE_SPORT') ? (
           <div>
-            <h2 className="text-base font-black text-amber-400 mb-3">
-              {section === 'LIVE_SPORT' ? '🔴 Matchs en Direct (Live)' : '⚽ Paris Sportifs (Direct & À venir)'}
-            </h2>
-            <div className="space-y-3 mb-6">
-              {filteredMatches.map(m => (
-                <div key={m.id} className="bg-[#0c2d20] p-3.5 rounded-xl border border-[#164a35]">
-                  <div className="flex justify-between text-[11px] text-emerald-300 mb-1.5">
-                    <span>{m.league}</span>
-                    <span className={m.status === 'LIVE' ? 'text-red-400 font-black animate-pulse' : 'text-amber-300'}>
-                      {m.status === 'LIVE' ? `● LIVE ${m.time}` : `🕒 ${m.time}`}
-                    </span>
-                  </div>
-                  <div className="font-bold text-sm mb-3">{m.home} <span className="text-amber-400 mx-1">vs</span> {m.away}</div>
-                  <div className="grid grid-cols-3 gap-2">
-                    {['1', 'X', '2'].map((label, idx) => (
-                      <button key={label} onClick={() => addPick(`${m.home} - ${m.away}`, label, m.odds[idx])} className="bg-[#082017] hover:bg-amber-400 hover:text-black py-2 px-3 rounded-lg border border-[#164a35] flex justify-between text-xs font-bold transition">
-                        <span className="text-emerald-400">{label}</span>
-                        <span>{m.odds[idx].toFixed(2)}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
+            <div className="flex justify-between items-center mb-3">
+              <h2 className="text-sm font-black text-amber-400">
+                {section === 'LIVE_SPORT' ? '🔴 Matchs en Direct Maintenant' : "⚽ Programme d'Aujourd'hui (Heure Tunisie)"}
+              </h2>
+              <span className="text-[11px] text-emerald-300">{shownMatches.length} matchs</span>
             </div>
+
+            {loadingSport ? (
+              <div className="text-center py-10 text-emerald-300 text-sm">Chargement des matchs en direct... ⚽</div>
+            ) : shownMatches.length === 0 ? (
+              <div className="bg-[#0c2d20] p-6 rounded-xl text-center text-sm text-emerald-200 border border-[#164a35]">
+                Aucun match en direct en ce moment. Cliquez sur <b>Sport</b> pour voir les matchs à venir!
+              </div>
+            ) : (
+              <div className="space-y-2.5 mb-6">
+                {shownMatches.map(m => (
+                  <div key={m.id} className="bg-[#0c2d20] p-3 rounded-xl border border-[#164a35]">
+                    <div className="flex justify-between text-[10px] text-emerald-300 mb-1">
+                      <span className="font-bold">{m.league}</span>
+                      <span className={m.isLive ? 'text-red-400 font-black animate-pulse' : 'text-amber-300 font-bold'}>
+                        {m.isLive ? `● LIVE (${m.status})` : `🕒 ${m.time}`}
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center font-bold text-sm mb-2.5">
+                      <span>{m.home}</span>
+                      <span className="bg-[#061811] px-2.5 py-0.5 rounded text-amber-400 text-xs font-black">{m.score}</span>
+                      <span>{m.away}</span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      {['1', 'X', '2'].map((label, idx) => (
+                        <button key={label} onClick={() => addPick(`${m.home} - ${m.away}`, label, m.odds[idx])} className="bg-[#082017] hover:bg-amber-400 hover:text-black py-1.5 px-3 rounded-lg border border-[#164a35] flex justify-between text-xs font-bold transition">
+                          <span className="text-emerald-400">{label}</span>
+                          <span>{m.odds[idx].toFixed(2)}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {ticket.length > 0 && (
               <div className="bg-[#0a261b] p-4 rounded-xl border-2 border-amber-400">
                 <div className="flex justify-between items-center mb-2">
-                  <span className="font-black text-amber-400 text-sm">🎫 Ticket de Jeu ({ticket.length})</span>
+                  <span className="font-black text-amber-400 text-sm">🎫 Ticket ({ticket.length})</span>
                   <button onClick={() => setTicket([])} className="text-xs text-red-400">Vider</button>
                 </div>
                 {ticket.map((t, i) => (
@@ -176,7 +246,7 @@ export default function FullCasinoAndSport() {
                   </div>
                 ))}
                 <div className="flex items-center justify-between mt-3 gap-2">
-                  <input type="number" value={stake} onChange={e => setStake(Number(e.target.value))} className="w-24 bg-white text-black font-bold px-2 py-1.5 rounded text-sm" />
+                  <input type="number" value={stake} onChange={e => setStake(Number(e.target.value))} className="w-20 bg-white text-black font-bold px-2 py-1.5 rounded text-sm" />
                   <span className="text-xs font-bold text-emerald-300">Gain: {(stake * totalOdd).toFixed(2)} TND</span>
                   <button onClick={() => setBetPlaced(true)} className="bg-amber-400 text-black font-black px-4 py-2 rounded-lg text-xs">VALIDER</button>
                 </div>
@@ -213,16 +283,12 @@ export default function FullCasinoAndSport() {
             <div className="grid grid-cols-3 gap-2.5">
               {gamesList.map((g) => (
                 <div key={g.id} onClick={() => setActive(g)} className="cursor-pointer rounded-xl overflow-hidden bg-[#0c2d20] border border-[#164a35] hover:border-amber-400 flex flex-col shadow-md">
-                  <div className={`h-32 sm:h-40 bg-gradient-to-br ${g.bg} relative flex flex-col items-center justify-center overflow-hidden`}>
-                    {g.provider === 'PRAGMATIC' ? (
-                      <img src={`${P_IMG}${g.code}.png`} alt={g.name} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
-                    ) : (
-                      <div className="p-2 text-center">
-                        <div className="text-3xl sm:text-4xl mb-1">{g.icon}</div>
-                        <div className="font-black text-[11px] text-white uppercase leading-tight">{g.name}</div>
-                      </div>
-                    )}
-                    {g.drops && <span className="absolute top-1.5 left-1.5 bg-black/80 text-amber-300 text-[8px] font-black px-1.5 py-0.5 rounded">DROPS & WINS</span>}
+                  <div className={`h-28 sm:h-36 bg-gradient-to-br ${g.bg} relative flex flex-col items-center justify-center p-2 text-center`}>
+                    {g.drops && <span className="absolute top-1.5 left-1.5 bg-black/75 text-amber-300 text-[8px] font-black px-1.5 py-0.5 rounded">DROPS & WINS</span>}
+                    <div className="text-3xl sm:text-4xl drop-shadow-lg mb-1">{g.icon}</div>
+                    <div className="font-black text-[11px] sm:text-xs text-white uppercase leading-tight drop-shadow-[0_2px_2px_rgba(0,0,0,0.9)]">
+                      {g.name}
+                    </div>
                   </div>
                   <div className="bg-[#0b291d] px-2 py-2 flex items-center justify-between">
                     <span className="text-[11px] font-semibold truncate">{g.name}</span>
