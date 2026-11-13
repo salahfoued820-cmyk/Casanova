@@ -1,183 +1,117 @@
 'use client';
 import React, { useState } from 'react';
-import { useAuth } from '@/lib/auth-context';
+import Link from 'next/link';
 
-const PRAGMATIC_NAMES = [
-  'Gates of Olympus', 'Sweet Bonanza', 'Big Bass Bonanza', 'The Dog House', 'Wolf Gold',
-  'Sugar Rush', 'Starlight Princess', 'Fruit Party', 'Madame Destiny', 'Gems Bonanza',
-  'Wild West Gold', 'Mustang Gold', 'Great Rhino', 'Buffalo King', 'John Hunter',
-  'Chilli Heat', 'Pirate Gold', 'Juicy Fruits', 'Hand of Midas', 'Power of Thor'
-];
-
-const AMATIC_NAMES = [
-  'Hot Fruits 100', 'Book of Aztec', 'Lucky Joker 40', 'All Ways Fruits', 'Book of Fortune',
-  'Bells on Fire', 'Wild Shark', 'Admiral Nelson', 'Eye of Ra', 'Casanova',
-  'Diamond Cats', 'Billyonaire', 'Arising Phoenix', 'Blue Dolphin', 'Lovely Lady', 'Hot Twenty'
-];
-
-const SYM_SETS = [
-  ['⚡', '👑', '💎', '⏳', '🏆'],
-  ['🍭', '🍉', '🍇', '💣', '🍬'],
-  ['7️⃣', '🍒', '🍋', '🍉', '⭐'],
-  ['📖', '🗿', '🦅', '👑', '💎'],
-  ['🃏', '🔔', '🔥', '💰', '🍀']
-];
-
-const IMGS = [
-  'https://unsplash.com',
-  'https://unsplash.com',
-  'https://unsplash.com',
-  'https://unsplash.com',
-  'https://unsplash.com'
-];
+const P_BASE = ['https:/', '/demogamesfree.pragmaticplay.net', '/gs2c/openGame.do?gameSymbol='].join('');
+const P_END = ['&websiteUrl=https%3A%2F%2Fdemogamesfree.pragmaticplay.net', '&jurisdiction=99&lang=FR&cur=TND'].join('');
+const A_BASE = ['https:/', '/://amatic.com', '/games/'].join('');
 
 const GAMES = [
-  ...PRAGMATIC_NAMES.map((name, i) => ({
-    id: `prag-${i}`,
-    name,
-    provider: 'Pragmatic',
-    img: IMGS[i % IMGS.length],
-    syms: SYM_SETS[i % SYM_SETS.length]
-  })),
-  ...AMATIC_NAMES.map((name, i) => ({
-    id: `amat-${i}`,
-    name,
-    provider: 'Amatic',
-    img: IMGS[(i + 2) % IMGS.length],
-    syms: SYM_SETS[(i + 2) % SYM_SETS.length]
-  }))
+  { id: 'olympus', name: 'Gates of Olympus', provider: 'PRAGMATIC', drops: true, bg: 'from-purple-700 to-amber-600', icon: '⚡👑⚡', code: 'vs20olympgate' },
+  { id: 'bonanza', name: 'Sweet Bonanza', provider: 'PRAGMATIC', drops: true, bg: 'from-pink-500 to-sky-400', icon: '🍭🍬🍉', code: 'vs20fruitsw' },
+  { id: 'bigbass', name: 'Big Bass Bonanza', provider: 'PRAGMATIC', drops: true, bg: 'from-cyan-600 to-emerald-600', icon: '🎣🐟💰', code: 'vs10bbbonanza' },
+  { id: '5lions', name: '5 Lions Megaways', provider: 'PRAGMATIC', drops: true, bg: 'from-amber-600 to-indigo-900', icon: '🦁🐉💰', code: 'vswayslions' },
+  { id: 'doghouse', name: 'The Dog House', provider: 'PRAGMATIC', drops: true, bg: 'from-amber-500 to-red-700', icon: '🐶🏠🦴', code: 'vs20doghouse' },
+  { id: 'wolfgold', name: 'Wolf Gold', provider: 'PRAGMATIC', drops: true, bg: 'from-orange-700 to-stone-900', icon: '🐺🌕🦅', code: 'vs25wolfgold' },
+  { id: 'sugarrush', name: 'Sugar Rush', provider: 'PRAGMATIC', drops: true, bg: 'from-fuchsia-600 to-purple-800', icon: '🧸🍩🍬', code: 'vs20sugarrush' },
+  { id: 'starlight', name: 'Starlight Princess', provider: 'PRAGMATIC', drops: true, bg: 'from-sky-500 to-pink-600', icon: '👸✨🌙', code: 'vs20starlight' },
+  { id: 'fruitparty', name: 'Fruit Party', provider: 'PRAGMATIC', drops: true, bg: 'from-lime-500 to-yellow-500', icon: '🍓🍇🍎', code: 'vs20fruitparty' },
+  { id: 'hotfruits100', name: 'Hot Fruits 100', provider: 'AMATIC', drops: false, bg: 'from-red-600 to-amber-500', icon: '7️⃣🍒🔥', code: 'hotfruits100' },
+  { id: 'bookofaztec', name: 'Book of Aztec', provider: 'AMATIC', drops: false, bg: 'from-amber-600 to-stone-900', icon: '📖🗿👑', code: 'bookofaztec' },
+  { id: 'luckyjoker40', name: 'Lucky Joker 40', provider: 'AMATIC', drops: false, bg: 'from-rose-700 to-yellow-600', icon: '🃏🔔🍀', code: 'luckyjoker40' },
+  { id: 'allwaysfruits', name: 'All Ways Fruits', provider: 'AMATIC', drops: false, bg: 'from-orange-500 to-purple-800', icon: '🍇🍊7️⃣', code: 'allwaysfruits' },
+  { id: 'bellsonfire', name: 'Bells on Fire', provider: 'AMATIC', drops: false, bg: 'from-red-700 to-yellow-500', icon: '🔔🔥7️⃣', code: 'bellsonfire' },
+  { id: 'casanova', name: 'Casanova', provider: 'AMATIC', drops: false, bg: 'from-rose-800 to-amber-700', icon: '🎭🌹👑', code: 'casanova' }
 ];
 
-export default function GamesLobby() {
-  const { user, token, login } = useAuth();
-  const [filter, setFilter] = useState('ALL');
+
+export default function OfficialDemoLobby() {
+  const [subTab, setSubTab] = useState<'TOUS' | 'FAVORIS' | 'DROPS'>('TOUS');
+  const [provider, setProvider] = useState<'TOUS' | 'PRAGMATIC' | 'AMATIC'>('TOUS');
   const [search, setSearch] = useState('');
-  const [active, setActive] = useState<typeof GAMES[0] | null>(null);
-  const [grid, setGrid] = useState<string[][]>([]);
-  const [bet, setBet] = useState(5);
-  const [spinning, setSpinning] = useState(false);
-  const [win, setWin] = useState(0);
+  const [favorites, setFavorites] = useState<string[]>(['olympus', 'bonanza', '5lions', 'hotfruits100']);
+  const [active, setActive] = useState<typeof GAMES | null>(null);
 
-  const API = process.env.NEXT_PUBLIC_API_URL || '';
+  const getUrl = (g: typeof GAMES) =>
+    g.provider === 'PRAGMATIC'
+      ? `${P_BASE}${g.code}${P_END}`
+      : `${A_BASE}${g.code}/index.html?language=fr&currency=TND`;
 
-  const start = (g: typeof GAMES[0]) => {
-    setActive(g);
-    setWin(0);
-    setGrid(Array.from({ length: 5 }, () => Array.from({ length: 3 }, (_, i) => g.syms[i % g.syms.length])));
-  };
-
-  const spin = async () => {
-    if (!active || spinning || !user || !token || (user.balance || 0) < bet) return;
-    setSpinning(true);
-    setWin(0);
-
-    const timer = setInterval(() => {
-      setGrid(Array.from({ length: 5 }, () => Array.from({ length: 3 }, () => active.syms[Math.floor(Math.random() * active.syms.length)])));
-    }, 70);
-
-    try {
-      const res = await fetch(`${API}/games/play-slot`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ bet, gameId: active.id })
-      });
-      const data = await res.json();
-      setTimeout(() => {
-        clearInterval(timer);
-        setSpinning(false);
-        if (data.success) {
-          setGrid(data.grid);
-          setWin(data.winAmount || 0);
-          login(token, { ...user, balance: data.newBalance });
-        }
-      }, 600);
-    } catch {
-      clearInterval(timer);
-      setSpinning(false);
-    }
+  const toggleFav = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    setFavorites(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   };
 
   if (active) {
     return (
-      <div className="fixed inset-0 z-50 bg-black text-white flex flex-col justify-between">
-        <div className="bg-gray-900 px-4 py-3 flex justify-between items-center border-b border-gray-800">
-          <button onClick={() => setActive(null)} className="bg-gray-800 px-3 py-1.5 rounded-lg text-sm font-bold">✕ Exit</button>
-          <span className="font-bold text-yellow-400">{active.name}</span>
-          <span className="text-xs text-gray-400">{active.provider}</span>
-        </div>
-
-        <div className="flex-1 flex flex-col items-center justify-center p-4 bg-cover bg-center" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.75), rgba(0,0,0,0.9)), url(${active.img})` }}>
-          <div className="bg-gray-950/90 p-3 rounded-2xl border-2 border-yellow-500/60 max-w-xl w-full grid grid-cols-5 gap-2">
-            {grid.map((col, c) => (
-              <div key={c} className="flex flex-col gap-2">
-                {col.map((sym, r) => (
-                  <div key={r} className="h-20 md:h-24 bg-gray-900 rounded-xl flex items-center justify-center text-4xl md:text-5xl border border-white/10">
-                    {sym}
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-          {win > 0 && <div className="mt-4 bg-green-600 px-6 py-2 rounded-full font-black text-xl animate-bounce">WIN TND {win.toFixed(2)}</div>}
-        </div>
-
-        <div className="bg-gray-950 p-4 border-t border-gray-800 flex items-center justify-between max-w-3xl mx-auto w-full">
-          <div>
-            <div className="text-[10px] text-gray-400">CREDIT</div>
-            <div className="font-black text-green-400">TND {user?.balance?.toFixed(2) || '0.00'}</div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button onClick={() => setBet(b => Math.max(1, b - 1))} className="w-8 h-8 bg-gray-800 rounded-full font-bold">-</button>
-            <span className="font-bold text-sm w-16 text-center">{bet} TND</span>
-            <button onClick={() => setBet(b => b + 1)} className="w-8 h-8 bg-gray-800 rounded-full font-bold">+</button>
-          </div>
-          <button onClick={spin} disabled={spinning} className="w-16 h-16 rounded-full bg-yellow-500 text-black font-black shadow-lg active:scale-95">
-            {spinning ? '...' : 'SPIN'}
+      <div className="fixed inset-0 z-50 bg-black flex flex-col">
+        <div className="bg-[#082017] px-4 py-2.5 flex justify-between items-center border-b border-[#164a35]">
+          <button onClick={() => setActive(null)} className="bg-amber-400 text-black font-black px-3.5 py-1.5 rounded-lg text-xs">
+            ✕ QUITTER
           </button>
+          <span className="font-bold text-white text-sm">{active.name} (Démo)</span>
+          <span className="text-xs text-emerald-400 font-bold">{active.provider}</span>
         </div>
+        <iframe src={getUrl(active)} title={active.name} className="w-full flex-1 border-0" allowFullScreen />
       </div>
     );
   }
 
   const list = GAMES.filter(g => {
-    const matchTab = filter === 'ALL' || g.provider.toUpperCase() === filter;
-    const matchSearch = g.name.toLowerCase().includes(search.toLowerCase());
-    return matchTab && matchSearch;
+    if (subTab === 'FAVORIS' && !favorites.includes(g.id)) return false;
+    if (subTab === 'DROPS' && !g.drops) return false;
+    if (provider !== 'TOUS' && g.provider !== provider) return false;
+    if (search && !g.name.toLowerCase().includes(search.toLowerCase())) return false;
+    return true;
   });
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white p-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col sm:flex-row justify-between gap-3 mb-6">
-          <div className="flex gap-2">
-            {['ALL', 'PRAGMATIC', 'AMATIC'].map(tab => (
-              <button key={tab} onClick={() => setFilter(tab)} className={`px-4 py-2 rounded-lg font-bold text-xs ${filter === tab ? 'bg-yellow-500 text-black' : 'bg-gray-900 text-gray-400'}`}>
-                {tab}
-              </button>
-            ))}
-          </div>
-          <input
-            type="text"
-            placeholder="🔍 Search game..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="bg-gray-900 border border-gray-800 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-yellow-500 sm:w-64"
-          />
+    <div className="min-h-screen bg-[#061811] text-white pb-24">
+      <div className="max-w-4xl mx-auto p-3">
+        <div className="grid grid-cols-3 gap-2 mb-3">
+          {['TOUS', 'FAVORIS', 'DROPS'].map(k => (
+            <button key={k} onClick={() => setSubTab(k as 'TOUS' | 'FAVORIS' | 'DROPS')} className={`py-2.5 rounded-lg font-extrabold text-xs border-b-2 ${subTab === k ? 'bg-[#0e3526] text-white border-amber-400' : 'bg-[#0a261b] text-emerald-200/80 border-transparent'}`}>
+              {k === 'DROPS' ? 'DROPS & WINS' : k}
+            </button>
+          ))}
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {list.map(g => (
-            <div key={g.id} onClick={() => start(g)} className="cursor-pointer bg-gray-900 rounded-xl overflow-hidden border border-gray-800 hover:border-yellow-500 transition">
-              <div className="h-36 bg-cover bg-center flex items-center justify-center" style={{ backgroundImage: `linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.8)), url(${g.img})` }}>
-                <span className="text-5xl">{g.syms[0]}</span>
+        <div className="grid grid-cols-3 gap-2 mb-3">
+          {(['TOUS', 'PRAGMATIC', 'AMATIC'] as const).map(p => (
+            <button key={p} onClick={() => setProvider(p)} className={`py-3 rounded-lg font-black text-xs border ${provider === p ? 'bg-[#0e3526] border-amber-400 text-white' : 'bg-[#0a261b] border-[#134230] text-emerald-200'}`}>
+              {p === 'PRAGMATIC' ? 'PRAGMATIC PLAY' : p}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex gap-2 mb-4">
+          <input type="text" placeholder="🔍 Rechercher le jeu..." value={search} onChange={(e) => setSearch(e.target.value)} className="flex-1 bg-white text-gray-900 rounded-lg px-3 py-2.5 text-sm focus:outline-none" />
+          <button className="bg-amber-400 text-black font-black text-xs px-4 rounded-lg">RECHERCHER</button>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2.5">
+          {list.map((g) => (
+            <div key={g.id} onClick={() => setActive(g)} className="cursor-pointer rounded-xl overflow-hidden bg-[#0c2d20] border border-[#164a35] hover:border-amber-400 flex flex-col">
+              <div className={`h-28 sm:h-36 bg-gradient-to-br ${g.bg} relative flex flex-col items-center justify-center p-2`}>
+                {g.drops && <span className="absolute top-1.5 left-1.5 bg-black/75 text-amber-300 text-[8px] font-black px-1.5 py-0.5 rounded">DROPS & WINS</span>}
+                <div className="text-3xl sm:text-4xl mb-1">{g.icon}</div>
+                <div className="text-center font-black text-[11px] text-white uppercase leading-tight">{g.name}</div>
               </div>
-              <div className="p-3">
-                <div className="font-bold text-sm truncate">{g.name}</div>
-                <div className="text-[11px] text-yellow-500">{g.provider}</div>
+              <div className="bg-[#0b291d] px-2 py-2 flex items-center justify-between">
+                <span className="text-[11px] font-semibold truncate">{g.name}</span>
+                <button onClick={(e) => toggleFav(e, g.id)} className={`text-sm ml-1 ${favorites.includes(g.id) ? 'text-amber-400' : 'text-emerald-500'}`}>★</button>
               </div>
             </div>
           ))}
         </div>
+      </div>
+
+      <div className="fixed bottom-0 inset-x-0 bg-[#082017] border-t border-[#144532] grid grid-cols-5 text-center z-40">
+        <Link href="/" className="py-2 flex flex-col items-center text-emerald-200/80"><span className="text-base">🏠</span><span className="text-[9px] font-bold">ACCUEIL</span></Link>
+        <div onClick={() => setProvider('PRAGMATIC')} className="py-2 flex flex-col items-center text-emerald-200/80 cursor-pointer"><span className="text-base">👑</span><span className="text-[9px] font-bold">PRAGMATIC</span></div>
+        <div onClick={() => setProvider('TOUS')} className="py-2 flex flex-col items-center bg-amber-400 text-black cursor-pointer"><span className="text-base">🎰</span><span className="text-[9px] font-black">CASINO</span></div>
+        <div onClick={() => setProvider('AMATIC')} className="py-2 flex flex-col items-center text-emerald-200/80 cursor-pointer"><span className="text-base">🍒</span><span className="text-[9px] font-bold">AMATIC</span></div>
+        <Link href="/dashboard" className="py-2 flex flex-col items-center text-emerald-200/80"><span className="text-base">👤</span><span className="text-[9px] font-bold">COMPTE</span></Link>
       </div>
     </div>
   );
