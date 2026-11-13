@@ -441,7 +441,7 @@ export default function ModernSportCasinoHome() {
         <button onClick={() => setTab('LIVE')} className={`py-2 flex flex-col items-center ${tab === 'LIVE' ? 'bg-amber-400 text-black font-black' : 'text-emerald-200'}`}><span className="text-base">⚽</span><span className="text-[9px] font-bold">LIVE</span></button>
         <button onClick={() => setTab('CASINO')} className={`py-2 flex flex-col items-center ${tab === 'CASINO' ? 'bg-amber-400 text-black font-black' : 'text-emerald-200'}`}><span className="text-base">🎰</span><span className="text-[9px] font-bold">CASINO</span></button>
         <Link href="/dashboard" className="py-2 flex flex-col items-center text-emerald-200"><span className="text-base">👤</span><span className="text-[9px] font-bold">COMPTE</span></Link>
-        <button onClick={() => setActiveGame(ALL_GAMES)} className="py-2 flex flex-col items-center text-emerald-200"><span className="text-base">✈️</span><span className="text-[9px] font-bold">AVIATOR</span></button>
+        <button onClick={() => setActiveGame(ALL_GAMES[0])} className="py-2 flex flex-col items-center text-emerald-200"><span className="text-base">✈️</span><span className="text-[9px] font-bold">AVIATOR</span></button>
       </div>
     </div>
   );
