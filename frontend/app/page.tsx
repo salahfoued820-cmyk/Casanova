@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-const P_BASE = ['https:/', '/games.pragmaticplay.net', '/gs2c/openGame.do?gameSymbol='].join('');
+const P_BASE = ['https:/', '/demogamesfree.pragmaticplay.net', '/gs2c/openGame.do?gameSymbol='].join('');
 const P_END = ['&websiteUrl=https%3A%2F%2Fdemogamesfree.pragmaticplay.net', '&jurisdiction=99&lang=FR&cur=TND'].join('');
 const A_BASE = ['https:/', '/://amatic.com', '/games/'].join('');
 const ESPN_BASE = ['https:/', '/site.api.', 'espn.com', '/apis/site/v2/sports/soccer/'].join('');
