@@ -30,9 +30,9 @@ export default function OfficialDemoLobby() {
   const [provider, setProvider] = useState<'TOUS' | 'PRAGMATIC' | 'AMATIC'>('TOUS');
   const [search, setSearch] = useState('');
   const [favorites, setFavorites] = useState<string[]>(['olympus', 'bonanza', '5lions', 'hotfruits100']);
-  const [active, setActive] = useState<typeof GAMES | null>(null);
+  const [active, setActive] = useState<typeof GAMES[number] | null>(null);
 
-  const getUrl = (g: typeof GAMES) =>
+  const getUrl = (g: typeof GAMES[number]) =>
     g.provider === 'PRAGMATIC'
       ? `${P_BASE}${g.code}${P_END}`
       : `${A_BASE}${g.code}/index.html?language=fr&currency=TND`;
