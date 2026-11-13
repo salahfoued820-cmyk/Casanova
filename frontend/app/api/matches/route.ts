@@ -40,7 +40,8 @@ export async function GET() {
 
   const matches = flat.map(({ ev, lg }, i) => {
     const comps = (ev.competitions as Array<Record<string, unknown>>) || [];
-    const competitors = (comps.?.competitors as Array<Record<string, unknown>>) || [];
+    const competitors = (comps?.[0]?.competitors as Array<Record<string, unknown>>) || [];
+
     const homeObj = competitors.find((c) => c.homeAway === 'home');
     const awayObj = competitors.find((c) => c.homeAway === 'away');
     const statusObj = (ev.status as Record<string, Record<string, string>>) || {};
