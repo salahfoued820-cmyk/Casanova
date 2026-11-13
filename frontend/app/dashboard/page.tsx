@@ -103,7 +103,7 @@ export default function DashboardPage() {
               <span className="text-green-100">Balance</span>
               <span className="text-2xl">💰</span>
             </div>
-            <div className="text-3xl font-bold">TND{user.balance.toFixed(2)}</div>
+            <div className="text-3xl font-bold">TND {user.balance?.toFixed(2) || '0.00'}</div>
           </div>
 
           {/* Bonus Balance Card */}
@@ -112,7 +112,7 @@ export default function DashboardPage() {
               <span className="text-yellow-100">Bonus Balance</span>
               <span className="text-2xl">🎁</span>
             </div>
-            <div className="text-3xl font-bold">TND{user.bonusBalance.toFixed(2)}</div>
+            <div className="text-3xl font-bold">TND {user.bonusBalance?.toFixed(2) || '0.00'}</div>
           </div>
 
           {/* VIP Level Card */}
