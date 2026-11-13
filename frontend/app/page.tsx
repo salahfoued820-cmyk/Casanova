@@ -137,10 +137,11 @@ export default function ModernSportCasinoHome() {
 
         const flat = responses.flat().sort((a, b) => new Date(a.ev.date).getTime() - new Date(b.ev.date).getTime());
 
-        const formatted: MatchItem[] = flat.map(({ ev, lg }, i) => {
+                const formatted: MatchItem[] = flat.map(({ ev, lg }, i) => {
           const comp = ev.competitions?.[0];
-          const homeObj = comp?.competitors?.find((c) => c.homeAway === 'home');
-          const awayObj = comp?.competitors?.find((c) => c.homeAway === 'away');
+          const homeObj = comp?.competitors?.find((c: { homeAway?: string; score?: string; team?: { shortDisplayName?: string } }) => c.homeAway === 'home');
+          const awayObj = comp?.competitors?.find((c: { homeAway?: string; score?: string; team?: { shortDisplayName?: string } }) => c.homeAway === 'away');
+
           const state = ev.status?.type?.state;
           const isLive = state === 'in';
           const dt = new Date(ev.date);
