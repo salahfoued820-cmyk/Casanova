@@ -58,13 +58,14 @@ const AMAT_30 = [
   ['arisingphoenix', 'Arising Phoenix', '🔥🦅👑'], ['bluedolphin', 'Blue Dolphin', '🐬🐚🌊']
 ];
 const LIVE_30 = [
-  ['101', 'Roulette Live', '🎡🔴⚫'],
-  ['103', 'Blackjack Live', '🃏♠️♥️'],
-  ['104', 'Baccarat Live', '🎴💎👑'],
-  ['801', 'Mega Wheel Live', '🎡🌈💰'],
-  ['1101', 'Sweet CandyLand', '🍭🎡🎪'],
-  ['1301', 'Mega Roulette', '⚡🎡🔥']
+  ['rla', 'Roulette Crystal', '🎡🔴⚫'],
+  ['bjma', 'American Blackjack', '🃏♠️♥️'],
+  ['bjmb', 'Multihand Blackjack', '🃏💎👑'],
+  ['bca', 'Baccarat', '🎴💰✨'],
+  ['bnadvanced', 'Dragon Tiger', '🐉🐅🔥'],
+  ['cs5triple', 'Spaceman Crash', '🚀👨‍🚀💫']
 ];
+
 
 const ALL_GAMES = [
   ...PRAG_60.map(([code, name, icon], i) => ({
