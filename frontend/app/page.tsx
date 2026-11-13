@@ -134,10 +134,8 @@ export default function ModernSportCasinoHome() {
     const fetchAllLeagues = async () => {
       setLoading(true);
       try {
-        const apiBase = ['https:/', '/casanova-af97.', 'onrender.com', '/api'].join('');
+        const res = await fetch('/api/matches');
 
-
-        const res = await fetch(`${apiBase}/games/live-matches`);
         const data = await res.json();
         if (data.success && Array.isArray(data.matches)) {
           setMatches(data.matches);
