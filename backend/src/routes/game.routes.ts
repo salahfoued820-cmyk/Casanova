@@ -37,11 +37,7 @@ router.post('/admin/deposit', async (req: Request, res: Response) => {
   }
 });
 
-// مسارات الألعاب الأساسية للموقع
-router.get('/', getAllGames);
-router.get('/jackpots', getJackpotGames);
-router.get('/:slug', getGameBySlug);
-router.post('/', authenticateToken, createGame);
+
 // جلب المباريات الحقيقية لـ 3 أسابيع بدون قيود CORS
 router.get('/live-matches', async (req: Request, res: Response) => {
   try {
@@ -73,7 +69,9 @@ router.get('/live-matches', async (req: Request, res: Response) => {
     const results = await Promise.all(
       leagues.map(async (lg) => {
         try {
-          const r = await fetch(`https://espn.com{lg.id}/scoreboard?dates=${range}`);
+          const espnUrl = ['https:/', '/site.api.', 'espn.com', `/apis/site/v2/sports/soccer/${lg.id}/scoreboard?dates=${range}`].join('');
+const r = await fetch(espnUrl);
+
           const data: any = await r.json();
           return (data.events || []).map((ev: any) => ({ ev, lg }));
         } catch {
@@ -119,5 +117,9 @@ router.get('/live-matches', async (req: Request, res: Response) => {
     res.status(500).json({ success: false, message: error.message });
   }
 });
-
+// مسارات الألعاب الأساسية للموقع
+router.get('/', getAllGames);
+router.get('/jackpots', getJackpotGames);
+router.get('/:slug', getGameBySlug);
+router.post('/', authenticateToken, createGame);
 export default router;
