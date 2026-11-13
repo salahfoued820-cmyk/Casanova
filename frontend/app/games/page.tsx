@@ -87,6 +87,20 @@ interface MatchItem {
   odds: [number, number, number];
 }
 
+interface EspnEvent {
+  id?: string;
+  date: string;
+  season?: { slug?: string };
+  status?: { type?: { state?: string; shortDetail?: string } };
+  competitions?: Array<{
+    competitors?: Array<{
+      homeAway?: string;
+      score?: string;
+      team?: { shortDisplayName?: string };
+    }>;
+  }>;
+}
+
 export default function HomeCasinoAndLiveSport() {
   const [section, setSection] = useState<'CASINO' | 'LIVE_CASINO' | 'SPORT' | 'LIVE_SPORT'>('CASINO');
   const [subTab, setSubTab] = useState<'TOUS' | 'FAVORIS' | 'DROPS'>('TOUS');
@@ -107,12 +121,12 @@ export default function HomeCasinoAndLiveSport() {
       try {
         const res = await fetch(ESPN_API);
         const data = await res.json();
-        const events = data.events || [];
-        const parsed: MatchItem[] = events.slice(0, 25).map((ev: any, idx: number) => {
+        const events: EspnEvent[] = data.events || [];
+        const parsed: MatchItem[] = events.slice(0, 25).map((ev, idx) => {
           const comp = ev.competitions?.[0];
-          const homeTeam = comp?.competitors?.find((c: any) => c.homeAway === 'home');
-          const awayTeam = comp?.competitors?.find((c: any) => c.homeAway === 'away');
-          const state = ev.status?.type?.state; // 'in' = live, 'pre' = upcoming, 'post' = finished
+          const homeTeam = comp?.competitors?.find((c) => c.homeAway === 'home');
+          const awayTeam = comp?.competitors?.find((c) => c.homeAway === 'away');
+          const state = ev.status?.type?.state;
           const isLive = state === 'in';
           const dateObj = new Date(ev.date);
           const tunisTime = dateObj.toLocaleTimeString('fr-TN', { hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Tunis' });
@@ -139,6 +153,7 @@ export default function HomeCasinoAndLiveSport() {
     };
     loadRealMatches();
   }, []);
+
 
   const getUrl = (g: typeof ALL_GAMES[number]) =>
     g.provider === 'AMATIC'
