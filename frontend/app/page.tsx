@@ -130,84 +130,22 @@ export default function ModernSportCasinoHome() {
     return { key, dayName };
   });
 
-    useEffect(() => {
+      useEffect(() => {
     const fetchAllLeagues = async () => {
       setLoading(true);
-      const todayKey = new Date().toLocaleDateString('fr-TN', { day: '2-digit', month: '2-digit', timeZone: 'Africa/Tunis' });
-      const d1 = new Date(Date.now() + 86400000).toLocaleDateString('fr-TN', { day: '2-digit', month: '2-digit', timeZone: 'Africa/Tunis' });
-      const d2 = new Date(Date.now() + 2 * 86400000).toLocaleDateString('fr-TN', { day: '2-digit', month: '2-digit', timeZone: 'Africa/Tunis' });
-
-      const fallbackMatches: MatchItem[] = [
-        { id: 'm1', leagueId: 'tun.1', leagueName: 'Ligue 1 Tunisie', flag: '🇹🇳', isLive: true, dateKey: todayKey, displayTime: "LIVE 64'", home: 'Espérance ST', away: 'Club Africain', homeScore: '1', awayScore: '0', odds: [1.75, 3.25, 4.50] },
-        { id: 'm2', leagueId: 'fifa.friendly', leagueName: 'International Friendlies', flag: '🌐', isLive: true, dateKey: todayKey, displayTime: "LIVE 39'", home: 'Tunisie', away: 'Maroc', homeScore: '1', awayScore: '1', odds: [2.40, 2.95, 2.85] },
-        { id: 'm3', leagueId: 'uefa.champions', leagueName: 'UEFA Nations / Champions', flag: '🇪🇺', isLive: false, dateKey: todayKey, displayTime: `${todayKey} • 20:45`, home: 'France', away: 'Italie', homeScore: '0', awayScore: '0', odds: [1.95, 3.35, 3.80] },
-        { id: 'm4', leagueId: 'esp.1', leagueName: 'LaLiga / Espagne', flag: '🇪🇸', isLive: false, dateKey: todayKey, displayTime: `${todayKey} • 20:45`, home: 'Espagne', away: 'Danemark', homeScore: '0', awayScore: '0', odds: [1.60, 3.70, 5.20] },
-        { id: 'm5', leagueId: 'eng.1', leagueName: 'Premier League / Angleterre', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', isLive: false, dateKey: d1, displayTime: `${d1} • 18:00`, home: 'Angleterre', away: 'Irlande', homeScore: '0', awayScore: '0', odds: [1.35, 4.60, 8.50] },
-        { id: 'm6', leagueId: 'ger.1', leagueName: 'Bundesliga / Allemagne', flag: '🇩🇪', isLive: false, dateKey: d1, displayTime: `${d1} • 20:45`, home: 'Allemagne', away: 'Bosnie', homeScore: '0', awayScore: '0', odds: [1.25, 5.50, 10.0] },
-        { id: 'm7', leagueId: 'bra.1', leagueName: 'Brasileirão Série A', flag: '🇧🇷', isLive: false, dateKey: d2, displayTime: `${d2} • 22:00`, home: 'Flamengo', away: 'Palmeiras', homeScore: '0', awayScore: '0', odds: [2.15, 3.20, 3.30] },
-        { id: 'm8', leagueId: 'arg.1', leagueName: 'Liga Argentina', flag: '🇦🇷', isLive: false, dateKey: d2, displayTime: `${d2} • 23:30`, home: 'River Plate', away: 'Boca Juniors', homeScore: '0', awayScore: '0', odds: [2.05, 3.10, 3.65] }
-      ];
-
       try {
-        const now = new Date();
-        const future = new Date(now.getTime() + 21 * 24 * 60 * 60 * 1000);
-        const fmt = (d: Date) => d.toISOString().slice(0, 10).replace(/-/g, '');
-        const range = `${fmt(now)}-${fmt(future)}`;
-
-        const leaguesToFetch = TOP_LEAGUES.filter((l) => l.id !== 'ALL');
-        const responses = await Promise.all(
-          leaguesToFetch.map((lg) =>
-            fetch(`${ESPN_BASE}${lg.id}/scoreboard?dates=${range}`)
-              .then((r) => r.json())
-              .then((data) => (data.events || []).map((ev: EspnEvent) => ({ ev, lg })))
-              .catch(() => [])
-          )
-        );
-
-        const flat = responses.flat().sort((a, b) => new Date(a.ev.date).getTime() - new Date(b.ev.date).getTime());
-
-        if (flat.length > 0) {
-          const formatted: MatchItem[] = flat.map(({ ev, lg }, i) => {
-            const comp = ev.competitions?.[0];
-                      const homeObj = comp?.competitors?.find((c: { homeAway?: string; score?: string; team?: { shortDisplayName?: string } }) => c.homeAway === 'home');
-          const awayObj = comp?.competitors?.find((c: { homeAway?: string; score?: string; team?: { shortDisplayName?: string } }) => c.homeAway === 'away');
-
-            const state = ev.status?.type?.state;
-            const isLive = state === 'in';
-            const dt = new Date(ev.date);
-            const dateKey = dt.toLocaleDateString('fr-TN', { day: '2-digit', month: '2-digit', timeZone: 'Africa/Tunis' });
-            const timeStr = dt.toLocaleTimeString('fr-TN', { hour: '2-digit', minute: '2-digit', timeZone: 'Africa/Tunis' });
-
-            return {
-              id: ev.id || String(i),
-              leagueId: lg.id,
-              leagueName: lg.name,
-              flag: lg.flag,
-              isLive,
-              dateKey,
-              displayTime: isLive ? (ev.status?.type?.shortDetail || 'LIVE') : `${dateKey} • ${timeStr}`,
-              home: homeObj?.team?.shortDisplayName || 'Home',
-              away: awayObj?.team?.shortDisplayName || 'Away',
-              homeScore: homeObj?.score || '0',
-              awayScore: awayObj?.score || '0',
-              odds: [
-                Number((1.55 + (i % 6) * 0.25).toFixed(2)),
-                Number((3.15 + (i % 4) * 0.20).toFixed(2)),
-                Number((2.10 + ((i + 3) % 6) * 0.35).toFixed(2))
-              ]
-            };
-          });
-          setMatches(formatted);
-        } else {
-          setMatches(fallbackMatches);
+        const apiBase = process.env.NEXT_PUBLIC_API_URL || 'https://onrender.com';
+        const res = await fetch(`${apiBase}/games/live-matches`);
+        const data = await res.json();
+        if (data.success && Array.isArray(data.matches)) {
+          setMatches(data.matches);
         }
-      } catch {
-        setMatches(fallbackMatches);
-      }
+      } catch {}
       setLoading(false);
     };
     fetchAllLeagues();
   }, []);
+
 
   const togglePick = (m: MatchItem, pick: string, odd: number) => {
     setBetSuccess(false);
