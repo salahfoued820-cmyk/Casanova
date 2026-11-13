@@ -57,14 +57,27 @@ const AMAT_30 = [
   ['diamondcats', 'Diamond Cats', '💎🐱👑'], ['billyonaire', 'Billyonaire', '🎩💵🚗'],
   ['arisingphoenix', 'Arising Phoenix', '🔥🦅👑'], ['bluedolphin', 'Blue Dolphin', '🐬🐚🌊']
 ];
+const LIVE_30 = [
+  ['101', 'Roulette Live', '🎡🔴⚫'],
+  ['103', 'Blackjack Live', '🃏♠️♥️'],
+  ['104', 'Baccarat Live', '🎴💎👑'],
+  ['801', 'Mega Wheel Live', '🎡🌈💰'],
+  ['1101', 'Sweet CandyLand', '🍭🎡🎪'],
+  ['1301', 'Mega Roulette', '⚡🎡🔥']
+];
+
 const ALL_GAMES = [
   ...PRAG_60.map(([code, name, icon], i) => ({
     id: `p-${i}`, name, provider: 'PRAGMATIC' as const, bg: 'from-purple-800 via-indigo-900 to-amber-600', icon, code
   })),
   ...AMAT_30.map(([code, name, icon], i) => ({
     id: `a-${i}`, name, provider: 'AMATIC' as const, bg: 'from-red-700 via-orange-600 to-amber-500', icon, code
+  })),
+  ...LIVE_30.map(([code, name, icon], i) => ({
+    id: `l-${i}`, name, provider: 'LIVE' as const, bg: 'from-emerald-800 via-teal-900 to-amber-700', icon, code
   }))
 ];
+
 
 interface MatchItem {
   id: string;
@@ -390,7 +403,7 @@ export default function ModernSportCasinoHome() {
           </div>
           <input type="text" placeholder="🔍 Rechercher le jeu..." value={gameSearch} onChange={(e) => setGameSearch(e.target.value)} className="w-full bg-white text-black rounded-lg px-3 py-2 text-sm mb-3" />
           <div className="grid grid-cols-3 gap-2">
-            {ALL_GAMES.filter((g) => (provider === 'TOUS' || g.provider === provider) && g.name.toLowerCase().includes(gameSearch.toLowerCase())).map((g) => (
+            {ALL_GAMES.filter((g) => (tab === 'LIVE_CASINO' ? g.provider === 'LIVE' : g.provider !== 'LIVE' && (provider === 'TOUS' || g.provider === provider)) && g.name.toLowerCase().includes(gameSearch.toLowerCase())).map((g) => (
               <div key={g.id} onClick={() => setActiveGame(g)} className="cursor-pointer rounded-xl overflow-hidden bg-[#083822] border border-emerald-700 hover:border-amber-400">
                 <div className={`h-28 bg-gradient-to-br ${g.bg} flex flex-col items-center justify-center p-2 text-center`}>
                   <div className="text-3xl mb-1">{g.icon}</div>
