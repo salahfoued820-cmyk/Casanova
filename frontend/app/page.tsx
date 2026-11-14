@@ -1,10 +1,11 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+const MY_DOMAIN = 'https://casanova-af97.com';
+const P_BASE = `${MY_DOMAIN}/gs2c/openGame.do?gameSymbol=`;
+const P_END = `&websiteUrl=${MY_DOMAIN}&jurisdiction=99&lang=FR&cur=TND`;
+const A_BASE = `${MY_DOMAIN}/games/`;
 
-const P_BASE = ['https:/', '/demopragmatic.com', '/gs2c/openGame.do?gameSymbol='].join('');
-const P_END = ['&websiteUrl=https%3A%2F%2Fcasanova-af97.onrender.com', '&jurisdiction=99&lang=FR&cur=TND'].join('');
-const A_BASE = ['https:/', '/://amatic.com', '/games/'].join('');
 const ESPN_BASE = ['https:/', '/site.api.', 'espn.com', '/apis/site/v2/sports/soccer/'].join('');
 
 
@@ -157,10 +158,11 @@ export default function ModernSportCasinoHome() {
   };
 
   if (activeGame) {
-    const url = activeGame.provider === 'casanova-af97'
-      ? `${A_BASE}${activeGame.code}/index.html?language=fr&currency=TND`
-      : `${P_BASE}${activeGame.code}${P_END}`;
-    return (
+  const url = activeGame.provider === 'AMATIC'
+    ? `${A_BASE}${activeGame.code}/index.html?language=fr&currency=TND`
+    : `${P_BASE}${activeGame.code}${P_END}`;
+  return (
+
       <div className="fixed inset-0 z-50 bg-black flex flex-col">
         <div className="bg-[#08301d] px-4 py-2.5 flex justify-between items-center border-b border-emerald-700">
           <button onClick={() => setActiveGame(null)} className="bg-amber-400 text-black font-black px-3 py-1 rounded text-xs">✕ QUITTER</button>
