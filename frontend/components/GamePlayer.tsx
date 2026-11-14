@@ -20,7 +20,7 @@ export default function GamePlayer({ gameCode, gameTitle, token, onBalanceUpdate
 
     try {
       // الاتصال المباشر برابطك وتمرير كود اللعبة ديناميكياً
-      const response = await fetch(`https://casanovaaf97.com{gameCode.toLowerCase()}`, {
+      const response = await fetch(`https://casanova-af97.com{gameCode.toLowerCase()}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
