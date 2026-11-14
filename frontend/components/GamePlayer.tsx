@@ -1,6 +1,8 @@
 'use client';
 import React, { useState } from 'react';
 
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
 interface GamePlayerProps {
   gameCode: string;
   gameTitle: string;
@@ -15,12 +17,16 @@ export default function GamePlayer({ gameCode, gameTitle, token, onBalanceUpdate
   const [loading, setLoading] = useState<boolean>(false);
 
   const handlePlay = async () => {
+    if (!token) {
+      setResult('يرجى تسجيل الدخول أولاً للعب');
+      return;
+    }
+
     setLoading(true);
     setResult('جاري اللعب...');
 
     try {
-      // الاتصال المباشر برابطك وتمرير كود اللعبة ديناميكياً
-      const response = await fetch(`https://casanova-af97.com{gameCode.toLowerCase()}`, {
+      const response = await fetch(`${API_BASE_URL}/games/play/${gameCode.toLowerCase()}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -35,7 +41,7 @@ export default function GamePlayer({ gameCode, gameTitle, token, onBalanceUpdate
         setResult(`المضاعف: ${data.multiplier}x | الربح: ${data.winAmount} TND`);
         if (onBalanceUpdate) onBalanceUpdate(data.newBalance);
       } else {
-        setResult(data.message || 'تأكد من تسجيل الدخول أو توفر الرصيد');
+        setResult(data.message || 'حدث خطأ أثناء اللعب');
       }
     } catch {
       setResult('تعذر الاتصال بخادم الألعاب');
@@ -45,7 +51,7 @@ export default function GamePlayer({ gameCode, gameTitle, token, onBalanceUpdate
   };
 
   return (
-    <div className="p-6 bg-slate-900 text-white rounded-xl max-w-lg mx-auto text-center space-y-5 border border-slate-700">
+    <div className="p-6 bg-slate-900 text-white rounded-xl max-w-lg mx-auto text-center space-y-5 border border-slate-700 w-full">
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-bold text-amber-400">{gameTitle}</h2>
         <button onClick={onClose} className="px-3 py-1 bg-red-600 rounded text-sm">إغلاق</button>
