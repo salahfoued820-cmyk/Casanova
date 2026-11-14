@@ -140,7 +140,12 @@ router.post('/play/:gameName', authenticateToken, async (req: any, res: Response
       return res.status(404).json({ success: false, message: `اللعبة (${gameName}) غير مفعلة` });
     }
 
-    const userId = req.user.id || req.user._id;
+    const userId = req.user?.id || req.user?._id || req.user?.userId || req.userId;
+
+if (!userId) {
+  return res.status(401).json({ success: false, message: 'تعذر قراءة معرف المستخدم من التوكن' });
+}
+
     const betAmount = Number(req.body.betAmount);
 
     if (!betAmount || betAmount <= 0) {
