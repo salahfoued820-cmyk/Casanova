@@ -159,21 +159,29 @@ export default function ModernSportCasinoHome() {
   };
 
   if (activeGame) {
-  const url = activeGame.provider === 'AMATIC'
-    ? `${A_BASE}${activeGame.code}/index.html?language=fr&currency=TND`
-    : `${P_BASE}${activeGame.code}${P_END}`;
-  return (
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') || '' : '';
 
-      <div className="fixed inset-0 z-50 bg-black flex flex-col">
-        <div className="bg-[#08301d] px-4 py-2.5 flex justify-between items-center border-b border-emerald-700">
-          <button onClick={() => setActiveGame(null)} className="bg-amber-400 text-black font-black px-3 py-1 rounded text-xs">✕ QUITTER</button>
-          <span className="font-bold text-white text-sm">{activeGame.name}</span>
-          <span className="text-xs text-amber-400 font-bold">{activeGame.provider}</span>
-        </div>
-        <iframe src={url} title={activeGame.name} className="w-full flex-1 border-0" allowFullScreen />
+  return (
+    <div className="fixed inset-0 z-50 bg-black flex flex-col">
+      <div className="bg-[#08301d] px-4 py-2.5 flex justify-between items-center border-b border-emerald-700">
+        <button onClick={() => setActiveGame(null)} className="bg-amber-400 text-black font-bold px-3 py-1 rounded text-xs">
+          ← Retour
+        </button>
+        <span className="font-bold text-white text-sm">{activeGame.name}</span>
+        <span className="text-xs text-amber-400 font-bold">{activeGame.provider}</span>
       </div>
-    );
-  }
+
+      <div className="flex-1 flex items-center justify-center p-4">
+        <GamePlayer
+          gameCode={activeGame.code}
+          gameTitle={activeGame.name}
+          token={token}
+          onClose={() => setActiveGame(null)}
+        />
+      </div>
+    </div>
+  );
+}
 
   const filteredMatches = matches.filter((m) => {
     if (tab === 'LIVE' && !m.isLive) return false;
