@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import GamePlayer from '../components/GamePlayer';
 const MY_DOMAIN = 'https://casanova-af97.com';
 const P_BASE = `${MY_DOMAIN}/gs2c/openGame.do?gameSymbol=`;
 const P_END = `&websiteUrl=${MY_DOMAIN}&jurisdiction=99&lang=FR&cur=TND`;
