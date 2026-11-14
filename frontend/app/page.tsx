@@ -2,8 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-const P_BASE = ['https:/', '/demogames.pragmaticplay.net', '/gs2c/openGame.do?gameSymbol='].join('');
-const P_END = ['&websiteUrl=https%3A%2F%2Fcasinogames.pragmaticplay.net', '&jurisdiction=99&lang=FR&cur=TND'].join('');
+const P_BASE = ['https:/', '/casanova-af97.onrender.com', '/gs2c/openGame.do?gameSymbol='].join('');
+const P_END = ['&websiteUrl=https%3A%2F%2Fcasanova-af97.onrender.com', '&jurisdiction=99&lang=FR&cur=TND'].join('');
 const A_BASE = ['https:/', '/://amatic.com', '/games/'].join('');
 const ESPN_BASE = ['https:/', '/site.api.', 'espn.com', '/apis/site/v2/sports/soccer/'].join('');
 
