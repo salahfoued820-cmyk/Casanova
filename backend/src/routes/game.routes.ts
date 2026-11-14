@@ -1,10 +1,24 @@
 import { Router, Request, Response } from 'express';
+import crypto from 'crypto';
 import { getAllGames, getGameBySlug, getJackpotGames, createGame } from '../controllers/game.controller';
 import { authenticateToken } from '../middleware/auth.middleware';
 import User from '../models/User';
 
 const router = Router();
-const ADMIN_PIN = "salah2026";
+const ADMIN_PIN = process.env.ADMIN_PIN || "salah2026";
+
+// =========================================================================
+// 🎮 قائمة إعدادات الألعاب: أضف اسم أي لعبة جديدة ومضاعفاتها هنا فقط!
+// =========================================================================
+const GAMES_CONFIG: Record<string, { multipliers: number[] }> = {
+  'wheel': { multipliers: [0, 0.5, 1.2, 1.5, 2, 0, 3, 5] },
+  'casanova': { multipliers: [0, 0, 1.5, 2, 0.5, 3, 10] },
+  'slots': { multipliers: [0, 0, 0.5, 1, 2, 5, 15] },
+  'dice': { multipliers: [0, 0, 1.9, 1.9] },
+  'coin': { multipliers: [0, 1.95] },
+  // أضف أي لعبة أخرى بنفس الصيغة، مثال:
+  // 'aviator': { multipliers: [0, 1.2, 1.5, 2, 4, 10] },
+};
 
 // 1. جلب قائمة جميع اللاعبين وأرصدتهم
 router.get('/admin/users', async (req: Request, res: Response) => {
@@ -37,8 +51,7 @@ router.post('/admin/deposit', async (req: Request, res: Response) => {
   }
 });
 
-
-// جلب المباريات الحقيقية لـ 3 أسابيع بدون قيود CORS
+// 3. جلب المباريات الحقيقية لـ 3 أسابيع بدون قيود CORS
 router.get('/live-matches', async (req: Request, res: Response) => {
   try {
     const leagues = [
@@ -70,8 +83,7 @@ router.get('/live-matches', async (req: Request, res: Response) => {
       leagues.map(async (lg) => {
         try {
           const espnUrl = ['https:/', '/site.api.', 'espn.com', `/apis/site/v2/sports/soccer/${lg.id}/scoreboard?dates=${range}`].join('');
-const r = await fetch(espnUrl);
-
+          const r = await fetch(espnUrl);
           const data: any = await r.json();
           return (data.events || []).map((ev: any) => ({ ev, lg }));
         } catch {
@@ -117,9 +129,56 @@ const r = await fetch(espnUrl);
     res.status(500).json({ success: false, message: error.message });
   }
 });
-// مسارات الألعاب الأساسية للموقع
+
+// 4. مسار موحد لتشغيل أي لعبة موجودة في GAMES_CONFIG وتحديث الرصيد
+router.post('/play/:gameName', authenticateToken, async (req: any, res: Response) => {
+  try {
+    const gameName = req.params.gameName.toLowerCase();
+    const gameConfig = GAMES_CONFIG[gameName];
+
+    if (!gameConfig) {
+      return res.status(404).json({ success: false, message: `اللعبة (${gameName}) غير مفعلة` });
+    }
+
+    const userId = req.user.id || req.user._id;
+    const betAmount = Number(req.body.betAmount);
+
+    if (!betAmount || betAmount <= 0) {
+      return res.status(400).json({ success: false, message: 'مبلغ الرهان غير صالح' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user || user.balance < betAmount) {
+      return res.status(400).json({ success: false, message: 'الرصيد غير كافٍ' });
+    }
+
+    // اختيار مضاعف عشوائي آمن من قائمة اللعبة
+    const { multipliers } = gameConfig;
+    const randomIndex = crypto.randomInt(0, multipliers.length);
+    const chosenMultiplier = multipliers[randomIndex];
+
+    const winAmount = Number((betAmount * chosenMultiplier).toFixed(2));
+    const netChange = winAmount - betAmount;
+
+    user.balance = Number((user.balance + netChange).toFixed(2));
+    await user.save();
+
+    res.json({
+      success: true,
+      game: gameName,
+      multiplier: chosenMultiplier,
+      winAmount,
+      newBalance: user.balance,
+    });
+  } catch (error: any) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// 5. مسارات الألعاب الأساسية للموقع
 router.get('/', getAllGames);
 router.get('/jackpots', getJackpotGames);
 router.get('/:slug', getGameBySlug);
 router.post('/', authenticateToken, createGame);
+
 export default router;
